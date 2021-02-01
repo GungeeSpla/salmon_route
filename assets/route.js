@@ -496,9 +496,9 @@ function change_scale() {
 	const scale = w / 2400;
 	canvas_scale = scale;
 	canvas_container.style.setProperty('transform', `scale(${scale})`);
+	canvas_wrapper.width(2400 * scale).height(2400 * scale);
 	right.scrollTop = Math.max(0, (w - wh)/2);
 	right.scrollLeft = Math.max(0, (w - ww)/2);
-	canvas_wrapper.width(2400 * scale).height(2400 * scale);
 	save_storage();
 }
 
