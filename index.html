@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+	<title>サーモンラン ルートマップ</title>
+	<link rel="icon" type="image/png" href="./favicon.png">
+	<!--
+	<script src="./assets/constant.js"></script>
+	<script src="./assets/route.js"></script>
+	<script src="./assets/lib.js"></script>
+	<script src="./assets/lang.js"></script>
+	-->
+	<script src="./assets/dist.js?ver=0.0.0"></script>
+	<link href="./assets/route.css?ver=0.0.0" rel="stylesheet">
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@GungeeSpla" />
+	<meta name="twitter:title" content="サーモンラン ルートマップ / Salmon Run Route Map" />
+	<meta name="twitter:description" content="シャケの移動ルートを調べることができます。" />
+	<meta name="twitter:image" content="https://gungeespla.github.io/salmon_route/favicon.png" />
+</head>
+<body>
+	<div id="wrapper">
+		<div id="left">
+			<h4 lang_key="stage"></h4>
+			<div id="stage-area">
+				<label><input name="stage" value="shakeup" type="radio"><span lang_key="shakeup"></span></label>
+				<label><input name="stage" value="shakeship" type="radio"><span lang_key="shakeship"></span></label>
+				<label><input name="stage" value="shakehouse" type="radio"><span lang_key="shakehouse"></span></label>
+				<label><input name="stage" value="shakelift" type="radio"><span lang_key="shakelift"></span></label>
+				<label><input name="stage" value="shakeride" type="radio"><span lang_key="shakeride"></span></label>
+			</div>
+			<h4 lang_key="tide"></h4>
+			<div id="tide-area">
+				<label><input name="tide" value="high" type="radio"><span lang_key="hightide"></span></label>
+				<label><input name="tide" value="normal" type="radio"><span lang_key="normaltide"></span></label>
+				<label><input name="tide" value="low" type="radio"><span lang_key="lowtide"></span></label>
+			</div>
+			<h4 lang_key="type"></h4>
+			<div id="type-area">
+				<label><input name="type" value="photo" type="radio"><span lang_key="photo"></span></label>
+				<label><input name="type" value="plan" type="radio"><span lang_key="plan"></span></label>
+			</div>
+			<h4 lang_key="scale"></h4>
+			<div id="scale-area">
+				<label><input name="scale" value="0.5" type="radio"><span lang_key="fit"></span></label>
+				<label><input name="scale" value="0.6" type="radio">60%</label>
+				<label><input name="scale" value="0.7" type="radio">70%</label>
+				<label><input name="scale" value="0.8" type="radio">80%</label>
+				<label><input name="scale" value="0.9" type="radio">90%</label>
+				<label><input name="scale" value="1.0" type="radio">100%</label>
+			</div>
+			<h4 lang_key="layer"></h4>
+			<div id="layer-area">
+				<label for="input-graph-node"><input type="checkbox" id="input-graph-node"><span lang_key="layer-node"></span></label>
+				<label for="input-graph-area"><input type="checkbox" id="input-graph-area"><span lang_key="layer-mesh"></span></label>
+				<label for="input-time"><input type="checkbox" id="input-time"><span lang_key="layer-time"></span></label>
+			</div>
+			<h4 lang_key="add"></h4>
+			<div id="add-area">
+				<p class="add-button" name="player" lang_key="player"></p>
+				<p class="add-button" name="enemy" lang_key="chum"></p>
+				<p class="add-button" name="enemy" lang_key="scrapper"></p>
+				<p class="add-button" name="enemy" lang_key="steeleel"></p>
+				<p class="add-button" name="enemy" lang_key="steelhead"></p>
+				<p class="add-button" name="enemy" lang_key="chum-rush"></p>
+				<p class="add-button" name="enemy" lang_key="goldie"></p>
+				<p class="add-button" name="enemy" lang_key="griller"></p>
+				<p class="add-button" name="egg" lang_key="egg-1"></p>
+				<p class="add-button" name="egg" lang_key="egg-2"></p>
+				<p class="add-button" name="egg" lang_key="egg-3"></p>
+			</div>
+			<h4 lang_key="other"></h4>
+			<div id="button-area">
+				<p onclick="download_image();" lang_key="save-image"></p>
+				<p onclick="download_image_clip();" lang_key="save-clip-image"></p>
+				<p onclick="download_image_view();" lang_key="save-view-image"></p>
+				<p onclick="show_help();" lang_key="help"></p>
+				<p onclick="ask_clear_storage();" lang_key="clear-localstorage"></p>
+			</div>
+		</div>
+		<div id="right">
+			<div id="canvas-wrapper">
+				<div id="canvas-container">
+					<canvas class="layer" style="z-index: 0; display: none;" id="canvas-download" width="2400" height="2400"></canvas>
+					<canvas class="layer" style="z-index: 1;" id="canvas-stage" width="2400" height="2400"></canvas>
+					<div    class="layer" style="z-index: 2;" id="layer-graph-area"></div>
+					<canvas class="layer" style="z-index: 3;" id="canvas-node-link" width="2400" height="2400"></canvas>
+					<div    class="layer" style="z-index: 4;" id="layer-graph-node"></div>
+					<canvas class="layer" style="z-index: 5;" id="canvas-route" width="2400" height="2400"></canvas>
+					<div    class="layer" style="z-index: 6;" id="layer-piece"></div> 
+					<canvas class="layer" style="z-index:10; display: none;" id="canvas-clip" width="2400" height="2400"></canvas>
+				</div>
+			</div>
+			<div id="right-fix-text" lang_key="select-range">範囲を選択してください</div>
+		</div>
+	</div>
+	<div id="loading" class="transparent hidden">
+		<div class="spinner"></div>
+	</div>
+	<div id="help" style="display: none;">
+		<div id="help-content">
+			<h1 lang_key="title"></h1>
+			<h3>Ver.<span lang_key="version"></span></h3>
+			<h4>駒の追加</h4>
+			<p>マップ上に駒を追加するには、画面左側のメニューにある追加ボタンを押してください。</p>
+			<p>または、マップ上で右クリックしてメニューを開き、そのメニューにある追加ボタンを押して駒を追加することもできます。その場合、駒は右クリックした場所に追加されます。</p>
+			<h4>駒の移動</h4>
+			<p>マップ上の駒を動かすには、駒をドラッグしてください。</p>
+			<asterisk>ドラッグ：駒の上でマウスボタンを押す→マウスボタンを押したままマウスを動かす→マウスボタンを離す。</asterisk>
+			<ul>
+				<li>｢Ctrl｣を押しながらドラッグすることで、駒をマウスカーソルに最も近いノードの上に移動させることができます。</li>
+				<li>｢Alt｣を押しながらドラッグすることで、駒をマウスカーソルに最も近いスポナーの上に移動させることができます。</li>
+			</ul>
+			<h4>駒の削除</h4>
+			<p>駒を削除するには、駒を右クリックしてメニューを開き、メニューの下部にある｢削除｣をクリックしてください。</p>
+			<p>または、｢Alt｣キーを押しながら駒をクリックすることでも駒を削除できます。</p>
+			<h4>時間</h4>
+			<p>駒の右上に表示されている時間は、シャケが移動するのにかかる時間を示しています。</p>
+			<p>タマヒロイの右上には3つの時間が表示されています。それぞれ「金イクラの前に到達するまでの時間」「金イクラをすべて拾うまでの時間」「海に帰るまでの時間」を示しています。</p>
+			<center style="margin: 30px 0 60px;"><a href="https://twitter.com/GungeeSpla">@GungeeSpla</a></center>
+		</div>
+		<div id="help-close"><p lang_key="close"></p></div>
+	</div>
+	<div id="contextmenu"></div>
+	<img src="./assets/piece/egg-1.png" id="img-egg-1">
+	<img src="./assets/piece/egg-2.png" id="img-egg-2">
+	<img src="./assets/piece/egg-3.png" id="img-egg-3">
+	<img src="./assets/piece/player-1.png" id="img-player-1">
+	<img src="./assets/piece/player-2.png" id="img-player-2">
+	<img src="./assets/piece/player-3.png" id="img-player-3">
+	<img src="./assets/piece/player-4.png" id="img-player-4">
+	<img src="./assets/piece/enemy-chum.png" id="img-chum">
+	<img src="./assets/piece/enemy-chum-rush.png" id="img-chum-rush">
+	<img src="./assets/piece/enemy-goldie.png" id="img-goldie">
+	<img src="./assets/piece/enemy-griller.png" id="img-griller">
+	<img src="./assets/piece/enemy-scrapper.png" id="img-scrapper">
+	<img src="./assets/piece/enemy-snatcher.png" id="img-snatcher">
+	<img src="./assets/piece/enemy-steeleel.png" id="img-steeleel">
+	<img src="./assets/piece/enemy-steelhead.png" id="img-steelhead">
+</body>
+</html>
