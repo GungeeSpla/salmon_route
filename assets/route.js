@@ -1343,6 +1343,7 @@ function download_image_clip() {
 function download_image(left = 0, top = 0, width = 2400, height = 2400) {
 	const canvas = canvas_dic['download'];
 	const ctx = ctx_dic['download'];
+	ctx.globalAlpha = 1;
 	ctx.fillStyle = 'white';
 	ctx.fillRect(0, 0, 2400, 2400);
 	ctx.drawImage(canvas_dic['stage'], 0, 0);
