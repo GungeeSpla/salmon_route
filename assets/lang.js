@@ -31,19 +31,11 @@ function translate_all() {
 		elm.text(text);
 	});
 }
-/*
-	$('.translate').each((i, elm) => {
-		const key = $(elm).attr('langkey');
-		const text = getLang(key);
-		$(elm).text(text);
-	});
-	$('.version-text').text(VERSION);
-*/
 
 const USER_LANG = (get_queries().lang || navigator.language || navigator.userLanguage || 'ja').includes('ja') ? 'ja' : 'en';
 const LANG = {};
 const LANG_DEF = `
-version|0.0.0
+version|0.0.1
 title|サーモンラン ルートマップ|Salmon Run Route Map
 stage|ステージ|Stage
 shakeup|シェケナダム|Spawning Grounds

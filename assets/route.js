@@ -678,7 +678,21 @@ function update_route() {
 	enemies.forEach((enemy) => {
 		if (enemy.enemy_key !== 'snatcher') {
 			enemy.target = null;
-			if (true) {
+			if (enemy.enemy_key === 'steelhead') {
+				let min_distance = Infinity;
+				let nearest_player_id = null;
+				player_ids = Object.keys(enemy.route_dic);
+				player_ids.forEach((player_id) => {	
+					const d = get_distance_3d(player_dic[player_id], enemy);
+					if (d < min_distance) {
+						min_distance = d;
+						nearest_player_id = player_id;
+					}
+				});
+				if (nearest_player_id) {
+					enemy.target = player_dic[nearest_player_id];
+				}
+			} else {
 				let min_distance = Infinity;
 				let nearest_player_id = null;
 				player_ids = Object.keys(enemy.route_dic);
