@@ -861,11 +861,7 @@ function create_route(start_pos, goal_pos) {
 	});
 	// 仮想的なスタートノード
 	let start_node;
-	if (start_pos instanceof GraphNode) {
-		start_node = start_pos;
-		start_node.distance = 0;
-		start_node.score = 0;
-	} else if (start_pos.snap_target_node) {
+	if (start_pos.snap_target_node) {
 		start_node = start_pos.snap_target_node;
 		start_node.distance = 0;
 		start_node.score = 0;
@@ -889,6 +885,7 @@ function create_route(start_pos, goal_pos) {
 				nearest_node = node;
 			}
 		});
+		start_node.links.push(nearest_node);
 		nearest_node.links.forEach((target_node) => {
 			if (target_node.parent_area === start_area) {
 				if (start_pos.can_drop || target_node.links.includes(nearest_node)) {
