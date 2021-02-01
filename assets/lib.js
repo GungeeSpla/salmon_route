@@ -580,7 +580,6 @@ function create_vec(p1, p2) {
 	}
 }
 
-
 /** set_canvasxy(e)
  */
 function set_canvasxy(e) {
@@ -591,6 +590,16 @@ function set_canvasxy(e) {
 	y = parseInt((y - rect.top) / canvas_scale);
 	e.canvasX = x;
 	e.canvasY = y;
+}
+
+/** get_pagexy_from_canvasxy(x, y)
+ */
+function get_pagexy_from_canvasxy(x, y) {
+	const rect = canvas_container.getBoundingClientRect();
+	return {
+		x: parseInt(x * canvas_scale + rect.left),
+		y: parseInt(y * canvas_scale + rect.top)
+	}
 }
 
 /** create_route_node_to_node()

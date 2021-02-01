@@ -523,6 +523,7 @@ body {
 }
 	#help-content {
 		width: 600px;
+		padding: 0 100px;
 		margin-left: auto;
 		margin-right: auto;
 		animation: help-content-show 500ms 1 ease-in-out;
@@ -617,10 +618,13 @@ body {
 	#help #help-close:after {
 		transform: rotate(-45deg);
 	}
+	#help:hover #help-close:after,
+	#help:hover #help-close:before,
 	#help #help-close:hover:after,
 	#help #help-close:hover:before {
 		background: #8cb5eb;
 	}
+	#help:hover #help-close p,
 	#help #help-close:hover p {
 		color: #8cb5eb;
 	}

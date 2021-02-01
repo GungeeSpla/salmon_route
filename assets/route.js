@@ -15,6 +15,7 @@ let check_state = {
 	'tide': 'normal',
 	'type': 'photo',
 	'scale': '0.7',
+	'help': false,
 	'input-graph-area': false,
 	'input-graph-node': false,
 	'input-time': true
@@ -33,6 +34,7 @@ let goal_area;
 let start_pos;
 let goal_pos;
 let piece_count = 0;
+let change_stage_count = 0;
 const player_dic = {};
 const canvas_dic = {};
 const ctx_dic = {};
@@ -262,6 +264,10 @@ function load_xml(stage, callback) {
 				update_canvas();
 
 				if (callback) callback();
+
+				if (change_stage_count === 0) change_scale();
+
+				change_stage_count++;
 			}
 		}
 	};
@@ -438,7 +444,6 @@ function select_stage(stage, tide, type) {
 	const img = new Image();
 	img.onload = () => {
 		stageImage = img;
-		change_scale();
 		ctx_dic['stage'].clearAll();
 		ctx_dic['stage'].drawImage(stageImage, 0, 0);
 		load_xml(stage, () => {
@@ -480,26 +485,32 @@ function change_type() {
 
 /** change_scale()
  */
-function change_scale() {
-	const checked_element = document.querySelector('input[type=radio][name=scale]:checked');
-	const value = checked_element.value;
-	check_state['scale'] = value;
-	const i = parseFloat(value);
-	let w = parseInt(2400 * i);
+function change_scale(val) {
+	let is_scroll = false;
+	if (typeof val !== 'number') {
+		const checked_element = document.querySelector('input[type=radio][name=scale]:checked');
+		val = checked_element.attr('value');
+		check_state['scale'] = val;
+		is_scroll = true;
+	}
+	let scale = parseFloat(val);
+	let w = parseInt(2400 * scale);
 	const right = get_elm('#right');
 	const rect = right.getBoundingClientRect();
 	const wh = window.innerHeight;
 	const ww = window.innerWidth - rect.left;
 	const ws = Math.min(wh, ww);
-	if (i === 0.5) {
+	if (val === 'fit') {
 		w = ws;
+		scale = w / 2400;
 	}
-	const scale = w / 2400;
 	canvas_scale = scale;
 	canvas_container.style.setProperty('transform', `scale(${scale})`);
 	canvas_wrapper.width(2400 * scale).height(2400 * scale);
-	right.scrollTop = Math.max(0, (w - wh)/2);
-	right.scrollLeft = Math.max(0, (w - ww)/2);
+	if (is_scroll) {
+		right.scrollTop = Math.max(0, (w - wh)/2);
+		right.scrollLeft = Math.max(0, (w - ww)/2);
+	}
 	save_storage();
 }
 
@@ -1053,9 +1064,13 @@ window.addEventListener('DOMContentLoaded', () => {
 	translate_all();
 
 	// ヘルプ閉じ
+	get_elm('#help').on('click', hide_help);
+	get_elm('#help-content').on('click', (e) => {
+		e.stopPropagation();
+	});
 	get_elm('#help-close').on('click', hide_help);
 
-	// スクロールイベント
+	// 左メニューのスクロールイベント
 	get_elm('#left').on('scroll', function(e) {
 		check_state['left-scroll'] = this.scrollTop;
 		save_storage();
@@ -1070,6 +1085,11 @@ window.addEventListener('DOMContentLoaded', () => {
 		Object.assign(check_state, JSON.parse(storage_item).check_state);
 	}
 
+	if (check_state['help']) {
+		show_help();
+	}
+
+	// 左メニューのスクロール
 	get_elm('#left').scrollTop = check_state['left-scroll'];
 
 	// ラベルとインプットの関連付け
@@ -1111,6 +1131,48 @@ window.addEventListener('DOMContentLoaded', () => {
 	canvas_dic['clip'] = get_elm('#canvas-clip');
 	   ctx_dic['clip'] = canvas_dic['clip'].getContext('2d');
 
+	// ステージのドラッグ
+	const scroll_data = {};
+	const right = get_elm('#right');
+	canvas_container.on('mousedown', (e) => {
+		scroll_data.is_down = true;
+		scroll_data.start_x = e.pageX;
+		scroll_data.start_y = e.pageY;
+		scroll_data.start_scroll_left = right.scrollLeft;
+		scroll_data.start_scroll_top = right.scrollTop;
+	});
+	canvas_container.on('mousemove', (e) => {
+		if (scroll_data.is_down) {
+			const end_x = e.pageX;
+			const end_y = e.pageY;
+			const move_x = end_x - scroll_data.start_x;
+			const move_y = end_y - scroll_data.start_y;
+			right.scrollLeft = scroll_data.start_scroll_left - move_x;
+			right.scrollTop = scroll_data.start_scroll_top - move_y;
+		}
+	});
+	canvas_container.on('mouseup', (e) => {
+		if (scroll_data.is_down) {
+			scroll_data.is_down = false;
+		}
+	});
+	canvas_container.on('wheel', (e) => {
+		set_canvasxy(e);
+		if (e.deltaY < 0) {
+			canvas_scale = Math.min(3, canvas_scale + 0.1);
+			change_scale(canvas_scale);
+		} else {
+			canvas_scale = Math.max(0.5, canvas_scale - 0.1);
+			change_scale(canvas_scale);
+		}
+		const pagexy = get_pagexy_from_canvasxy(e.canvasX, e.canvasY);
+		const scroll_x = pagexy.x - e.pageX;
+		const scroll_y = pagexy.y - e.pageY;
+		right.scrollLeft += scroll_x;
+		right.scrollTop += scroll_y;
+		e.preventDefault();
+	}, false);
+
 	// クリッピング
 	const clip_data = {};
 	canvas_dic['clip'].css('pointer-events', 'auto');
@@ -1119,6 +1181,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		clip_data.start_x = e.canvasX;
 		clip_data.start_y = e.canvasY;
 		clip_data.is_down = true;
+		e.stopPropagation();
 	});
 	canvas_dic['clip'].on('mousemove', (e) => {
 		if (clip_data.is_down) {
@@ -1291,6 +1354,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	});
 
 	// 現在の拡大率とステージを適用
+	change_scale();
 	change_stage();
 
 });
@@ -1301,6 +1365,8 @@ function show_help() {
 	get_elm('#left').css('filter', 'blur(4px)');
 	get_elm('#right').css('filter', 'blur(4px)');
 	get_elm('#help').show();
+	check_state['help'] = true;
+	save_storage();
 }
 /** hide_help()
  */
@@ -1312,6 +1378,8 @@ function hide_help() {
 		get_elm('#help').hide();
 		get_elm('#help').classList.remove('transparent');
 	}, 500);
+	check_state['help'] = false;
+	save_storage();
 }
 
 /** download_image_view()
@@ -1319,12 +1387,10 @@ function hide_help() {
 function download_image_view() {
 	const wrapper = get_elm('#right');
 	const rect = wrapper.getBoundingClientRect();
-	const left = (wrapper.scrollLeft) / canvas_scale;
-	const top = (wrapper.scrollTop) / canvas_scale;
-	const right = (left + rect.width) / canvas_scale;
-	const bottom = (top + rect.height) / canvas_scale;
-	const width = Math.min(2400, right - left);
-	const height = Math.min(2400, bottom - top);
+	const left = wrapper.scrollLeft / canvas_scale;
+	const top = wrapper.scrollTop / canvas_scale;
+	const width = Math.min(2400, rect.width / canvas_scale);
+	const height = Math.min(2400, rect.height / canvas_scale);
 	download_image(left, top, width, height);
 }
 
