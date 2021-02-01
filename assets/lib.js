@@ -847,7 +847,8 @@ function create_route(start_pos, goal_pos) {
 	if (start_area === goal_area) {
 		return {
 			path: [ start_pos, goal_pos ],
-			distance: get_distance_2d(start_pos, goal_pos)
+			distance_2d: get_distance_2d(start_pos, goal_pos),
+			distance_3d: get_distance_3d(start_pos, goal_pos)
 		}
 	}
 	graph_nodes.forEach((node) => {
