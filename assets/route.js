@@ -438,6 +438,7 @@ function select_stage(stage, tide, type) {
 	const img = new Image();
 	img.onload = () => {
 		stageImage = img;
+		change_scale();
 		ctx_dic['stage'].clearAll();
 		ctx_dic['stage'].drawImage(stageImage, 0, 0);
 		load_xml(stage, () => {
@@ -1290,7 +1291,6 @@ window.addEventListener('DOMContentLoaded', () => {
 	});
 
 	// 現在の拡大率とステージを適用
-	change_scale();
 	change_stage();
 
 });
