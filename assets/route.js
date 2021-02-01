@@ -75,9 +75,9 @@ function get_data(element) {
 	return data;
 }
 
-/** load_xml(num, callback)
+/** load_xml(stage, callback)
  */
-function load_xml(num, callback) {
+function load_xml(stage, callback) {
 	const req = new XMLHttpRequest();
 	req.onreadystatechange = function() {
 		if (req.readyState === 4) {
@@ -248,10 +248,16 @@ function load_xml(num, callback) {
 				});
 
 				// ペナルティ
-				if (graph_node_dic['obj6516']) graph_node_dic['obj6516'].penalty = 45;
-				if (graph_node_dic['obj10501']) graph_node_dic['obj10501'].penalty = 1;
-				if (graph_node_dic['obj8580']) graph_node_dic['obj8580'].snatcher_penalty = -200;
-				if (graph_node_dic['obj9264']) graph_node_dic['obj9264'].snatcher_penalty = -10;
+				if (stage === 'shakehouse') {
+					if (graph_node_dic['obj6516']) graph_node_dic['obj6516'].penalty = 45;
+				}
+				if (stage === 'shakeride') {
+					if (graph_node_dic['obj10501']) graph_node_dic['obj10501'].penalty = 1;
+				}
+				if (stage === 'shakelift') {
+					if (graph_node_dic['obj8580']) graph_node_dic['obj8580'].snatcher_penalty = -240;
+					if (graph_node_dic['obj9264']) graph_node_dic['obj9264'].snatcher_penalty = -10;
+				}
 
 				update_canvas();
 
@@ -259,7 +265,7 @@ function load_xml(num, callback) {
 			}
 		}
 	};
-	req.open('GET', './assets/xml/' + num + '.xml');
+	req.open('GET', './assets/xml/' + stage + '.xml');
 	req.send(null);
 }
 

@@ -1080,6 +1080,10 @@ function explore_loop_snatcher_return(node_a, node_z, depth) {
 				} else if (!node_b.is_sea_node) {
 					explore_loop_snatcher_return(node_b, node_a, depth + 1);
 				}
+			} else if (score - 240 < explore_loop_snatcher_return.min_score) {
+				if (!node_b.is_sea_node) {
+					explore_loop_snatcher_return(node_b, node_a, depth + 1);
+				}
 			}
 		}
 	});
