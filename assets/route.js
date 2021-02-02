@@ -1411,6 +1411,7 @@ function download_image_clip() {
 function download_image(left = 0, top = 0, width = 2400, height = 2400) {
 	const canvas = canvas_dic['download'];
 	const ctx = ctx_dic['download'];
+	ctx.save();
 	ctx.globalAlpha = 1;
 	ctx.fillStyle = 'white';
 	ctx.fillRect(0, 0, 2400, 2400);
@@ -1447,6 +1448,7 @@ function download_image(left = 0, top = 0, width = 2400, height = 2400) {
 		ctx.globalAlpha = 1;
 		ctx.drawImage(canvas_node, 0, 0);
 	}
+	ctx.globalAlpha = 1;
 	ctx.drawImage(canvas_dic['route'], 0, 0);
 	get_elms('.draggable-piece').each((piece) => {
 		let img_id = piece.attr('piece');
@@ -1510,6 +1512,7 @@ function download_image(left = 0, top = 0, width = 2400, height = 2400) {
 
 		ctx.shadowColor = 'rgba(0, 0, 0, 0)';
 	});
+	ctx.restore();
 	const [canvas_dl, ctx_dl] = create_canvas(width, height);
 	ctx_dl.drawImage(canvas, - left, - top);
 	const date_str = get_date_str();
