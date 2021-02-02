@@ -1135,11 +1135,13 @@ window.addEventListener('DOMContentLoaded', () => {
 	const scroll_data = {};
 	const right = get_elm('#right');
 	canvas_container.on('mousedown', (e) => {
-		scroll_data.is_down = true;
-		scroll_data.start_x = e.pageX;
-		scroll_data.start_y = e.pageY;
-		scroll_data.start_scroll_left = right.scrollLeft;
-		scroll_data.start_scroll_top = right.scrollTop;
+		if (e.button === 0) {
+			scroll_data.is_down = true;
+			scroll_data.start_x = e.pageX;
+			scroll_data.start_y = e.pageY;
+			scroll_data.start_scroll_left = right.scrollLeft;
+			scroll_data.start_scroll_top = right.scrollTop;
+		}
 	});
 	canvas_container.on('mousemove', (e) => {
 		if (scroll_data.is_down) {
