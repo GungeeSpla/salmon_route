@@ -6,7 +6,7 @@ body, div, p, span, h1, h2, h3, h4, h5, ul, ol, li, input, textarea, label {
 li {
 	list-style-type: none;
 }
-img {
+body > img {
 	display: none;
 }
 /** body */
@@ -526,7 +526,7 @@ body {
 }
 	#help-content {
 		width: 600px;
-		padding: 0 100px;
+		padding: 100px;
 		margin-left: auto;
 		margin-right: auto;
 		animation: help-content-show 500ms 1 ease-in-out;
@@ -538,18 +538,36 @@ body {
 			transform: translateY(0px);
 		}
 	}
+	#help-content img {
+		filter: drop-shadow(0px 0px 5px rgba(50, 180, 180, 0.4))
+	}
+	#help-content a {
+		color: #333;
+	}
+	#help-content a:hover {
+		color: #2196f3;
+	}
 	#help-content h1 {
 		text-align: center;
 		margin: 30px 0 0;
+		color: #333;
+		background: -webkit-linear-gradient(0deg, #127cdd, #00d795);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
 	}
 	#help-content h3 {
 		text-align: center;
 		margin: 0 0 30px;
+		color: #666;
+		background: -webkit-linear-gradient(0deg, #127cdd, #00d795);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
 	}
 	#help-content h4 {
 		text-align: left;
-		border-bottom: 1px solid #333;
-		margin: 30px 0 30px;
+		border-bottom: 1px solid #999;
+		margin: 40px 0 30px;
+		font-size: 120%;
 	}
 	#help-content p {
 		margin: 20px 0;
