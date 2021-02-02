@@ -37,6 +37,9 @@ body {
 	white-space: nowrap;
 	overflow-x: hidden;
 	overflow-y: scroll;
+	user-select: none;
+	padding-bottom: 57px;
+	background: #eee;
 }
 	#left h4 {
 		background: #333;
@@ -618,13 +621,10 @@ body {
 	#help #help-close:after {
 		transform: rotate(-45deg);
 	}
-	#help:hover #help-close:after,
-	#help:hover #help-close:before,
 	#help #help-close:hover:after,
 	#help #help-close:hover:before {
 		background: #8cb5eb;
 	}
-	#help:hover #help-close p,
 	#help #help-close:hover p {
 		color: #8cb5eb;
 	}
