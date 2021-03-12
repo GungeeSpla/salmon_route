@@ -23,7 +23,7 @@ const ENEMY_DATA = {
 		can_drop: true
 	},
 	'griller': {
-		speed: 1.95,
+		speed: 2.00,
 		can_drop: false
 	},
 	'scrapper': {

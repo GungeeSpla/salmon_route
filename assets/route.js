@@ -738,7 +738,30 @@ function update_route() {
 			if (target) {
 				const route = enemy.route_dic[target.id];
 				if (route) {
-					const time = route.distance_2d / enemy.speed / 60;
+					let time = route.distance_2d / enemy.speed / 60;
+					if (enemy.enemy_key === 'griller') {
+						let p1 = route.path[0];
+						let before_angle = null;
+						let before_angle_y = null;
+						for (let i = 1; i < route.path.length; i++) {
+							const p2 = route.path[i];
+							const angle = ((get_vector_angle(p2, p1) * 180 / Math.PI) + 360) % 360;
+							const angle_y = (get_vector_angle_y(p2, p1) * 180 / Math.PI);
+							if (before_angle) {
+								const dif_angle = Math.min(
+									Math.abs(before_angle - angle),
+									Math.abs((before_angle + 360) - angle),
+									Math.abs(before_angle - (angle + 360))
+								);
+								const dif_angle_y = Math.abs(before_angle_y - angle_y);
+								const rotate_time = Math.max(2.2 * (dif_angle / 360)) + 2/60;
+								time += rotate_time;
+							}
+							before_angle = angle;
+							before_angle_y = angle_y;
+							p1 = p2;
+						}
+					}
 					enemy.querySelector('.fukidashi').show().textContent = time.toFixed(1) + ' sec.';
 					const path = route.path;
 					ctx.lineWidth = 6;

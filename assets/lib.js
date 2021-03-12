@@ -525,6 +525,32 @@ function get_vector_angle(arg1, arg2) {
 	}
 }
 
+/** get_vector_angle_y(vec)
+ */
+function get_vector_angle_y(arg1, arg2) {
+	let vec;
+	if (arg2) {
+		vec = {
+			x:  get_distance_2d(arg1, arg2),
+			y:  arg1.z - arg2.z
+		};
+	}
+	const asin = Math.asin(vec.y / get_distance_2d(vec));
+	if (vec.y >= 0) {
+		if (vec.x > 0) {
+			return asin;
+		} else {
+			return Math.PI - asin;
+		}
+	} else {
+		if (vec.x > 0) {
+			return Math.PI*2 - Math.abs(asin);
+		} else {
+			return Math.PI + Math.abs(asin);
+		}
+	}
+}
+
 /** get_rotated_vector(vec, rad)
  */
 function get_rotated_vector(vec, rad) {
